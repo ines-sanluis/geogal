@@ -57,7 +57,7 @@ function App() {
 
     // Set today's municipality
     setCurrentLocation(getDailyMunicipality());
-  }, []);
+  }, []); // Only run on mount
 
   const calculateDistance = (lat1, lng1, lat2, lng2) => {
     const R = 6371e3; // Earth's radius in meters
@@ -115,6 +115,7 @@ function App() {
       guesses,
       score,
       gameOver,
+      hasPlayedToday,
       ...updates,
     };
     localStorage.setItem("galiciaGame", JSON.stringify(gameData));
@@ -149,16 +150,17 @@ function App() {
       newGuesses.length === MAX_GUESSES ||
       municipalityName === currentLocation.name;
 
+    updateLocalStorage({
+      guesses: newGuesses,
+      gameOver: isGameOver,
+      hasPlayedToday: isGameOver,
+    });
+
     if (isGameOver) {
       setGameOver(true);
       setHasWon(municipalityName === currentLocation.name);
       setHasPlayedToday(true);
     }
-
-    updateLocalStorage({
-      guesses: newGuesses,
-      gameOver: isGameOver,
-    });
   };
 
   return (
@@ -202,8 +204,7 @@ function App() {
           rel="noopener noreferrer"
         >
           sanluisdev
-        </a>{" "}
-        en X
+        </a>
       </footer>
     </div>
   );
