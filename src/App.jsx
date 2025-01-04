@@ -181,7 +181,7 @@ function App() {
       };
 
       const isGameOver =
-        guesses.length === MAX_GUESSES ||
+        guesses.length === MAX_GUESSES - 1 ||
         newGuess.name === currentLocation.name;
 
       setGuesses((prevGuesses) => {
