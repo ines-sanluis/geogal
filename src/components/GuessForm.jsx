@@ -34,8 +34,8 @@ const GuessForm = ({
           type="text"
           value={selectedMunicipality}
           onChange={(e) => setSelectedMunicipality(e.target.value)}
-          placeholder="Escolle un concello..."
-          list={selectedMunicipality.length >= 3 ? "suggestions" : undefined}
+          placeholder="Escribe un concello..."
+          list={selectedMunicipality.length >= 2 ? "suggestions" : undefined}
         />
         <datalist id="suggestions">
           {Object.keys(municipalities).map((name) => (
