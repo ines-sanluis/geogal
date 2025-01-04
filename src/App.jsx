@@ -163,12 +163,10 @@ function App() {
 
   return (
     <div className="flex flex-col items-center justify-center w-screen p-4">
-      <h1 className="text-3xl font-bold text-center mb-8">GeoGal</h1>
-      {hasPlayedToday && (
-        <div className="text-center mb-4 p-2 bg-blue-100 rounded">
-          Vémonos mañá! Próximo concello en {timeLeft}
-        </div>
-      )}
+      <h1 className="text-3xl font-bold text-center mb-2">GeoGal</h1>
+      <h2 className="text-sm font-bold text-center mb-4">
+        Adiviña o concello galego do día
+      </h2>
       <div className="space-y-6">
         <GaliciaComponent currentLocation={currentLocation} guesses={guesses} />
         <GuessForm
@@ -180,6 +178,11 @@ function App() {
           gameOver={gameOver}
           currentLocation={currentLocation}
         />
+        {hasPlayedToday && (
+          <div className="text-center mb-4 p-2 bg-blue-100 rounded">
+            Vémonos mañá! Próximo concello en {timeLeft}
+          </div>
+        )}
         {gameOver && (
           <ShareButtons
             score={score}
