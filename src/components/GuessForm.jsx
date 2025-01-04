@@ -11,18 +11,23 @@ const GuessForm = ({
   currentLocation,
 }) => {
   const [selectedMunicipality, setSelectedMunicipality] = React.useState("");
-  const [error, setError] = React.useState("");
+  const [message, setMessage] = React.useState("");
   const listClasses =
     "text-sm grid grid-cols-[auto_1fr_auto_auto] gap-4 items-center px-4 py-2 border border-[#4a90e2] rounded-lg mt-2 bg-white/50";
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (guesses.includes(selectedMunicipality)) {
-      setError("Este concello xa foi adiviñado");
-      return;
-    }
     if (selectedMunicipality) {
-      onGuess(selectedMunicipality);
-      setSelectedMunicipality("");
+      const isAlreadyGuessed = guesses.some(
+        (guess) => guess.name === selectedMunicipality
+      );
+      if (isAlreadyGuessed) {
+        setMessage("🤔 Xa o seleccionaches!");
+        setTimeout(() => setMessage(""), 2000);
+        return;
+      } else {
+        onGuess(selectedMunicipality);
+        setSelectedMunicipality("");
+      }
     }
   };
 
@@ -51,8 +56,13 @@ const GuessForm = ({
           Adiviñar
         </button>
       </div>
-
-      <p className="text-sm text-red-500">{error}</p>
+      <p
+        className={`w-full h-2 text-sm mt-1 mb-4 transition-opacity duration-300 ${
+          selectedMunicipality.length > 0 ? "opacity-100" : "opacity-0"
+        }`}
+      >
+        {message}
+      </p>
       <div className="w-full flex flex-col mt-4">
         <div className="flex justify-between">
           <h2 className="text-xl font-bold">Intentos</h2>
