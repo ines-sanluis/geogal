@@ -122,7 +122,7 @@ function App() {
           sanluisdev
         </a>
         <p className="text-xs mt-2 text-center">
-          Os datos dos concellos proceden do © Instituto Geográfico Nacional de
+          Os datos dos concellos proceden do © Instituto Xeográfico Nacional de
           España.
         </p>
       </footer>
