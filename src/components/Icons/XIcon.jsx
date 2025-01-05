@@ -23,10 +23,4 @@ XIcon.propTypes = {
   className: PropTypes.string,
 };
 
-XIcon.defaultProps = {
-  size: 24,
-  color: "currentColor",
-  className: "",
-};
-
 export default XIcon;

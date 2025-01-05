@@ -27,10 +27,4 @@ WhatsAppIcon.propTypes = {
   className: PropTypes.string,
 };
 
-WhatsAppIcon.defaultProps = {
-  size: 24,
-  color: "currentColor",
-  className: "",
-};
-
 export default WhatsAppIcon;

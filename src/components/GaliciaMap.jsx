@@ -1,14 +1,38 @@
 import { useEffect, useRef } from "react";
-import PropTypes from "prop-types";
 import * as d3 from "d3";
-import geoData from "../data/galicia.json";
+import PropTypes from "prop-types";
+import { municipalitiesData as geoData } from "../data/municipalities";
+
+function utmToLatLon(easting, northing) {
+  const centerLon = -8.5;
+  const centerLat = 42.7;
+  const lonScale = 0.000011;
+  const latScale = 0.000009;
+  const lon = centerLon + (easting - 600000) * lonScale;
+  const lat = centerLat + (northing - 4700000) * latScale;
+  return [lon, lat];
+}
+
+function transformGeoJSON(geojson) {
+  const transformed = JSON.parse(JSON.stringify(geojson));
+  transformed.features.forEach((feature) => {
+    if (feature.geometry.type === "MultiPolygon") {
+      feature.geometry.coordinates = feature.geometry.coordinates.map((poly) =>
+        poly.map((ring) => ring.map((coord) => utmToLatLon(coord[0], coord[1])))
+      );
+    }
+  });
+  return transformed;
+}
 
 const GaliciaMap = ({ currentLocation, guesses }) => {
   const svgRef = useRef();
 
   useEffect(() => {
-    const width = 400;
-    const height = 300;
+    if (!geoData) return;
+
+    const width = 600 * 3;
+    const height = 400 * 3;
 
     // Clear previous content
     d3.select(svgRef.current).selectAll("*").remove();
@@ -17,118 +41,57 @@ const GaliciaMap = ({ currentLocation, guesses }) => {
       .select(svgRef.current)
       .attr("viewBox", `0 0 ${width} ${height}`);
 
-    // Set up the projection with adjusted scale and center
+    // Transform the GeoJSON data
+    const transformedData = transformGeoJSON(geoData);
+
+    // Set up the projection
     const projection = d3
       .geoMercator()
-      .center([-7.85, 42.7]) // Adjust center slightly
-      .scale(5500) // Reduce scale more
-      .translate([width / 2, height / 2]);
+      .fitSize([width, height], transformedData);
 
     const pathGenerator = d3.geoPath().projection(projection);
 
-    // Add the base map
+    // Add the base map with conditional coloring
     const g = svg.append("g");
-
     g.selectAll("path")
-      .data(geoData.features)
+      .data(transformedData.features)
       .enter()
       .append("path")
       .attr("d", pathGenerator)
-      .attr("fill", "none")
+      .attr("fill", (feature) => {
+        // If it's the current location
+        if (currentLocation === feature.properties.CONCELLO) {
+          return "#1e40af";
+        }
+        // If it's among the guesses
+        if (guesses?.some((guess) => guess === feature.properties.CONCELLO)) {
+          return "transparent";
+        }
+        // Default state
+        return "#e5e7eb"; // gray-200
+      })
       .attr("stroke", "black")
       .attr("stroke-width", 1);
-
-    // Add guesses
-    // Add guesses as X marks
-    if (guesses?.length > 0) {
-      const xSize = 6; // Size of the X mark
-
-      guesses.forEach((d) => {
-        const [x, y] = projection([d.lng, d.lat]);
-        g.append("line")
-          .attr("x1", x - xSize / 2)
-          .attr("y1", y - xSize / 2)
-          .attr("x2", x + xSize / 2)
-          .attr("y2", y + xSize / 2)
-          .attr("stroke", "crimson")
-          .attr("stroke-width", 2);
-
-        g.append("line")
-          .attr("x1", x - xSize / 2)
-          .attr("y1", y + xSize / 2)
-          .attr("x2", x + xSize / 2)
-          .attr("y2", y - xSize / 2)
-          .attr("stroke", "crimson")
-          .attr("stroke-width", 2);
-      });
-    }
-
-    // Add current location as a blue dot
-    if (currentLocation?.lat && currentLocation?.lng) {
-      const [x, y] = projection([currentLocation.lng, currentLocation.lat]);
-
-      // Create drop shadow
-      const defs = svg.append("defs");
-      const filter = defs
-        .append("filter")
-        .attr("id", "dot-shadow")
-        .attr("height", "130%");
-
-      filter
-        .append("feGaussianBlur")
-        .attr("in", "SourceAlpha")
-        .attr("stdDeviation", 1);
-
-      filter.append("feOffset").attr("dx", 0).attr("dy", 1);
-
-      filter
-        .append("feComposite")
-        .attr("operator", "out")
-        .attr("in2", "SourceAlpha");
-
-      filter
-        .append("feColorMatrix")
-        .attr("values", "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.3 0");
-
-      const feMerge = filter.append("feMerge");
-      feMerge.append("feMergeNode");
-      feMerge.append("feMergeNode").attr("in", "SourceGraphic");
-
-      // Draw the dot
-      g.append("circle")
-        .attr("cx", x)
-        .attr("cy", y)
-        .attr("r", 5)
-        .attr("fill", "#1e40af")
-        .attr("stroke", "white")
-        .attr("stroke-width", 1.5)
-        .attr("filter", "url(#dot-shadow)");
-    }
   }, [currentLocation, guesses]);
 
+  if (!geoData) {
+    return (
+      <div className="w-full h-[400px] flex items-center justify-center">
+        Cargando mapa...
+      </div>
+    );
+  }
+
   return (
-    <div className="w-full h-[300px]">
+    <div className="w-full h-[400px]">
       <svg ref={svgRef} style={{ width: "100%", height: "100%" }} />
     </div>
   );
 };
 
 GaliciaMap.propTypes = {
-  currentLocation: PropTypes.shape({
-    lat: PropTypes.number.isRequired,
-    lng: PropTypes.number.isRequired,
-  }),
-  guesses: PropTypes.arrayOf(
-    PropTypes.shape({
-      lat: PropTypes.number.isRequired,
-      lng: PropTypes.number.isRequired,
-    })
-  ),
-};
-
-GaliciaMap.defaultProps = {
-  currentLocation: null,
-  guesses: [],
+  currentLocation: PropTypes.string,
+  guesses: PropTypes.array,
 };
 
 export default GaliciaMap;

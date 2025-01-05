@@ -6,10 +6,9 @@ const ShareButtons = ({ score, guesses, hasWon }) => {
   const generateShareText = () => {
     const date = new Date().toLocaleDateString("gl");
     const guessCount = guesses.length;
-    const maxAttempts = 3;
 
     return `🎯 Xoguei ao GeoGal (${date})
-    🎲 ${guessCount}/${maxAttempts} intentos
+    🎲 ${guessCount}/313 intentos
     🏆 ${score} puntos
     ${hasWon ? "🎉 Adiviñei o concello!" : "😢 Non o adiviñei"}
 Xoga en geogal.vercel.app!`;
@@ -26,7 +25,7 @@ Xoga en geogal.vercel.app!`;
   };
 
   return (
-    <div className="flex flex-col sm:flex-row gap-3 mt-6 w-full">
+    <div className="flex flex-col sm:flex-row gap-3 mt-4 w-full">
       <button
         onClick={handleWhatsAppShare}
         className="flex-1 flex items-center justify-center gap-2 px-6 py-3 
@@ -53,11 +52,7 @@ Xoga en geogal.vercel.app!`;
 
 ShareButtons.propTypes = {
   score: PropTypes.number.isRequired,
-  guesses: PropTypes.arrayOf(
-    PropTypes.shape({
-      direction: PropTypes.string.isRequired,
-    })
-  ).isRequired,
+  guesses: PropTypes.arrayOf(PropTypes.string).isRequired,
   currentLocation: PropTypes.shape({
     name: PropTypes.string.isRequired,
   }).isRequired,
