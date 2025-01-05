@@ -8,9 +8,9 @@ const ShareButtons = ({ score, guesses, hasWon }) => {
     const guessCount = guesses.length;
 
     return `🎯 Xoguei ao GeoGal (${date})
+    ${hasWon ? "🎉 Adiviñei o concello!" : "😢 Non o adiviñei"}
     🎲 ${guessCount}/313 intentos
     🏆 ${score} puntos
-    ${hasWon ? "🎉 Adiviñei o concello!" : "😢 Non o adiviñei"}
 Xoga en geogal.vercel.app!`;
   };
 
