@@ -13,7 +13,14 @@ function App() {
   const [hasWon, setHasWon] = useState(false); // Track if the user has won
   const [guesses, setGuesses] = useState([]); // Track the user's guesses
   const timeLeft = useTimeUntilMidnight();
-  const score = 313 - guesses.length || 313;
+
+  const getScore = useCallback(() => {
+    if (gameOver && hasWon) {
+      return hasWon ? 314 - guesses.length : 0;
+    } else {
+      return 313 - guesses.length;
+    }
+  }, [gameOver, guesses.length, hasWon]);
 
   useEffect(() => {
     const today = getTodayString();
@@ -49,18 +56,18 @@ function App() {
 
   const handleGuess = useCallback(
     (guess) => {
-      if (guess.toLowerCase() === target?.name.toLowerCase()) {
-        setGameOver(true);
-        setHasWon(true);
-        updateLocalStorage({ gameOver: true, score });
-      }
       setGuesses((prevGuesses) => {
         const updatedGuesses = [...prevGuesses, guess];
         updateLocalStorage({ guesses: updatedGuesses });
         return updatedGuesses;
       });
+      if (guess.toLowerCase() === target?.name.toLowerCase()) {
+        setGameOver(true);
+        setHasWon(true);
+        updateLocalStorage({ gameOver: true, score: getScore() });
+      }
     },
-    [target, updateLocalStorage, score]
+    [target?.name, updateLocalStorage, getScore]
   );
 
   const onGiveUp = () => {
@@ -83,7 +90,7 @@ function App() {
           onGuess={handleGuess}
           disabled={gameOver}
           guesses={guesses}
-          score={score}
+          score={getScore()}
           gameOver={gameOver}
           currentLocation={target?.name || ""}
         />
@@ -103,7 +110,7 @@ function App() {
         )}
         {gameOver && (
           <ShareButtons
-            score={score}
+            score={getScore()}
             guesses={guesses}
             currentLocation={target}
             hasWon={hasWon}
