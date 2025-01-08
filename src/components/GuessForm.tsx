@@ -1,5 +1,6 @@
 import React, { MouseEventHandler } from "react";
 import { municipalitiesData } from "../data/municipalities";
+import Guess from "./Guess";
 
 const suggestions = municipalitiesData.features.map(
   (feature) => feature.properties?.CONCELLO
@@ -89,24 +90,19 @@ const GuessForm = ({
         </div>
         <ul className="list-disc list-inside">
           {guesses.map((guess, index) => (
-            <li key={index + "guess" + guess} className={listClasses}>
-              <span className="font-bold">{index + 1}</span>
-              <span className="text-left">{guess}</span>
-            </li>
+            <Guess
+              key={`guess-${index}`}
+              emoji={(index + 1).toString()}
+              text={guess}
+            />
           ))}
           {guesses.length === 0 && !gameOver && (
-            <li className={listClasses + " bg-white/30"}>
-              <span className="font-bold">👀</span>
-              <span>Sen intentos</span>
-            </li>
+            <Guess emoji={"👀"} text={"Sen intentos"} />
           )}
           {gameOver &&
             guesses.length > 0 &&
             guesses[guesses.length - 1] !== currentLocation && (
-              <li className={listClasses + " bg-white/30"}>
-                <span className="font-bold">🏁</span>
-                <span>{currentLocation}</span>
-              </li>
+              <Guess emoji={"🏁"} text={currentLocation} />
             )}
         </ul>
       </div>
