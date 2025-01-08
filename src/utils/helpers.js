@@ -4,6 +4,11 @@ import { getTodayString } from "./date";
 const featureToObj = (feature) => ({
   name: feature.properties.CONCELLO,
   feature: feature, // Including the full feature for reference
+  hints: [
+    "🌍 Provincia de " + feature.properties.PROVINCIA,
+    "🔠 Comeza por " + feature.properties.CONCELLO[0],
+    "📏 Ten " + feature.properties.CONCELLO.length + " letras",
+  ],
 });
 
 // Helper function to find a municipality from the GeoJSON features

@@ -89,33 +89,26 @@ function App() {
         <div className="max-w-[400px] m-auto">
           <GuessForm
             onGuess={handleGuess}
+            onGiveUp={onGiveUp}
             disabled={gameOver}
             guesses={guesses}
             score={getScore()}
             gameOver={gameOver}
             currentLocation={target?.name || ""}
+            hints={target?.hints || []}
           />
-          {gameOver ? (
-            <div className="text-center mb-4 p-2 bg-blue-100 rounded">
-              Vémonos mañá! Próximo concello en {timeLeft}
-            </div>
-          ) : (
-            <div className="flex justify-end mt-2">
-              <button
-                onClick={onGiveUp}
-                className="h-12 px-3 border-0 border text-[#f0f4ef] border-[#4a90e2] rounded-lg m-0"
-              >
-                Rendirme
-              </button>
-            </div>
-          )}
           {gameOver && (
-            <ShareButtons
-              score={getScore()}
-              guesses={guesses}
-              currentLocation={target}
-              hasWon={hasWon}
-            />
+            <>
+              <div className="text-center mt-4 mb-4 p-2 bg-blue-100 rounded">
+                Vémonos mañá! Próximo concello en {timeLeft}
+              </div>
+              <ShareButtons
+                score={getScore()}
+                guesses={guesses}
+                currentLocation={target}
+                hasWon={hasWon}
+              />
+            </>
           )}
         </div>
       </div>

@@ -6,9 +6,18 @@ const suggestions = municipalitiesData.features.map(
   (feature) => feature.properties.CONCELLO
 );
 
-const GuessForm = ({ onGuess, guesses, score, gameOver, currentLocation }) => {
+const GuessForm = ({
+  onGuess,
+  onGiveUp,
+  guesses,
+  score,
+  gameOver,
+  currentLocation,
+  hints,
+}) => {
   const [selectedMunicipality, setSelectedMunicipality] = React.useState("");
   const [message, setMessage] = React.useState("");
+  const [shownHints, setShownHints] = React.useState([]);
   const listClasses =
     "text-sm grid grid-cols-[auto_1fr_auto_auto] gap-4 items-center px-4 py-2 border border-[#4a90e2] rounded-lg mt-2 bg-white/50";
   const handleSubmit = (e) => {
@@ -93,17 +102,45 @@ const GuessForm = ({ onGuess, guesses, score, gameOver, currentLocation }) => {
             )}
         </ul>
       </div>
+      {!gameOver && (
+        <div className="w-full flex flex-col mt-4">
+          <h2 className="text-xl font-bold">Pistas</h2>
+          <div className="flex flex-col items-center mt-4">
+            {hints.map((hint, index) => (
+              <button
+                key={index}
+                onClick={() => {
+                  if (!shownHints.includes(index)) {
+                    setShownHints([...shownHints, index]);
+                  }
+                }}
+                className="w-full text-sm bg-primary hover:border hover:border-white text-white px-4 py-2 rounded-lg mb-2"
+              >
+                {shownHints.includes(index) ? hint : "🔒 Ver pista"}
+              </button>
+            ))}
+            <button
+              onClick={onGiveUp}
+              className="w-full text-sm bg-primary hover:border hover:border-white text-white px-4 py-2 rounded-lg mb-2"
+            >
+              Rendirme
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
 GuessForm.propTypes = {
   onGuess: PropTypes.func.isRequired,
+  onGiveUp: PropTypes.func.isRequired,
   disabled: PropTypes.bool,
   guesses: PropTypes.array.isRequired,
   score: PropTypes.number,
   gameOver: PropTypes.bool,
   currentLocation: PropTypes.string,
+  hints: PropTypes.array,
 };
 
 export default GuessForm;
