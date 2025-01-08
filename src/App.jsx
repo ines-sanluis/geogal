@@ -86,36 +86,38 @@ function App() {
           currentLocation={target?.name || ""}
           guesses={guesses}
         />
-        <GuessForm
-          onGuess={handleGuess}
-          disabled={gameOver}
-          guesses={guesses}
-          score={getScore()}
-          gameOver={gameOver}
-          currentLocation={target?.name || ""}
-        />
-        {gameOver ? (
-          <div className="text-center mb-4 p-2 bg-blue-100 rounded">
-            Vémonos mañá! Próximo concello en {timeLeft}
-          </div>
-        ) : (
-          <div className="flex justify-end mt-2">
-            <button
-              onClick={onGiveUp}
-              className="h-12 px-3 border-0 border text-[#f0f4ef] border-[#4a90e2] rounded-lg m-0"
-            >
-              Rendirme
-            </button>
-          </div>
-        )}
-        {gameOver && (
-          <ShareButtons
-            score={getScore()}
+        <div className="max-w-[400px] m-auto">
+          <GuessForm
+            onGuess={handleGuess}
+            disabled={gameOver}
             guesses={guesses}
-            currentLocation={target}
-            hasWon={hasWon}
+            score={getScore()}
+            gameOver={gameOver}
+            currentLocation={target?.name || ""}
           />
-        )}
+          {gameOver ? (
+            <div className="text-center mb-4 p-2 bg-blue-100 rounded">
+              Vémonos mañá! Próximo concello en {timeLeft}
+            </div>
+          ) : (
+            <div className="flex justify-end mt-2">
+              <button
+                onClick={onGiveUp}
+                className="h-12 px-3 border-0 border text-[#f0f4ef] border-[#4a90e2] rounded-lg m-0"
+              >
+                Rendirme
+              </button>
+            </div>
+          )}
+          {gameOver && (
+            <ShareButtons
+              score={getScore()}
+              guesses={guesses}
+              currentLocation={target}
+              hasWon={hasWon}
+            />
+          )}
+        </div>
       </div>
       <footer
         style={{ marginTop: "20px", textAlign: "center", fontSize: "14px" }}

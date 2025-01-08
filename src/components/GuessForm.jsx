@@ -77,6 +77,12 @@ const GuessForm = ({ onGuess, guesses, score, gameOver, currentLocation }) => {
               <span className="text-left">{guess}</span>
             </li>
           ))}
+          {guesses.length === 0 && !gameOver && (
+            <li className={listClasses + " bg-white/30"}>
+              <span className="font-bold">👀</span>
+              <span>Sen intentos</span>
+            </li>
+          )}
           {gameOver &&
             guesses.length > 0 &&
             guesses[guesses.length - 1] !== currentLocation && (

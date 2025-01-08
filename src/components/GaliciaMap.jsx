@@ -31,47 +31,68 @@ const GaliciaMap = ({ currentLocation, guesses }) => {
   useEffect(() => {
     if (!geoData) return;
 
-    const width = 600 * 3;
-    const height = 400 * 3;
+    const width = 600;
+    const height = 400;
 
     // Clear previous content
     d3.select(svgRef.current).selectAll("*").remove();
 
     const svg = d3
       .select(svgRef.current)
-      .attr("viewBox", `0 0 ${width} ${height}`);
+      .attr("viewBox", `0 0 ${width} ${height}`)
+      .attr("preserveAspectRatio", "xMidYMid");
 
     // Transform the GeoJSON data
     const transformedData = transformGeoJSON(geoData);
 
-    // Set up the projection
+    // Calculate the center of Galicia
+    const center = [-8.5, 42.7]; // Approximate center of Galicia
+
+    // Set up the projection with explicit center and scale
     const projection = d3
       .geoMercator()
-      .fitSize([width, height], transformedData);
+      .center(center)
+      .scale(width * 15) // Increased scale to make the map larger
+      .translate([width / 2, height / 2]);
 
     const pathGenerator = d3.geoPath().projection(projection);
 
     // Add the base map with conditional coloring
     const g = svg.append("g");
+
+    // Add paths
     g.selectAll("path")
       .data(transformedData.features)
       .enter()
       .append("path")
       .attr("d", pathGenerator)
       .attr("fill", (feature) => {
-        // If it's the current location
         if (currentLocation === feature.properties.CONCELLO) {
           return "#1e40af";
         }
-        // If it's among the guesses
         if (guesses?.some((guess) => guess === feature.properties.CONCELLO)) {
           return "transparent";
         }
-        // Default state
-        return "#e5e7eb"; // gray-200
+        return "#e5e7eb";
       })
       .attr("stroke", "black")
-      .attr("stroke-width", 1);
+      .attr("stroke-width", 0.5);
+
+    // Calculate bounds of the paths
+    const bounds = pathGenerator.bounds(transformedData);
+    const dx = bounds[1][0] - bounds[0][0];
+    const dy = bounds[1][1] - bounds[0][1];
+    const x = (bounds[0][0] + bounds[1][0]) / 2;
+    const y = (bounds[0][1] + bounds[1][1]) / 2;
+    const scale = 0.9 / Math.max(dx / width, dy / height);
+
+    // Apply transform to the group to ensure it fills the height
+    g.attr(
+      "transform",
+      `translate(${width / 2},${
+        height / 2
+      })scale(${scale})translate(${-x},${-y})`
+    );
   }, [currentLocation, guesses]);
 
   if (!geoData) {
@@ -82,11 +103,7 @@ const GaliciaMap = ({ currentLocation, guesses }) => {
     );
   }
 
-  return (
-    <div className="w-full h-[400px]">
-      <svg ref={svgRef} style={{ width: "100%", height: "100%" }} />
-    </div>
-  );
+  return <svg ref={svgRef} className="h-[500px]" />;
 };
 
 GaliciaMap.propTypes = {
