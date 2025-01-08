@@ -1,6 +1,8 @@
 import React, { MouseEventHandler } from "react";
 import { municipalitiesData } from "../data/municipalities";
-import Guess from "./Guess";
+import BlockGuess from "./BlockGuess";
+import Guesses from "./Guesses";
+import Heading from "./Heading";
 
 const suggestions = municipalitiesData.features.map(
   (feature) => feature.properties?.CONCELLO
@@ -83,32 +85,20 @@ const GuessForm = ({
       >
         {message}
       </p>
-      <div className="w-full flex flex-col mt-4">
-        <div className="flex justify-between">
-          <h2 className="text-xl font-bold">Intentos</h2>
-          <p className="text-lg font-bold"> 🔥 {score} puntos</p>
-        </div>
-        <ul className="list-disc list-inside">
-          {guesses.map((guess, index) => (
-            <Guess
-              key={`guess-${index}`}
-              emoji={(index + 1).toString()}
-              text={guess}
-            />
-          ))}
-          {guesses.length === 0 && !gameOver && (
-            <Guess emoji={"👀"} text={"Sen intentos"} />
-          )}
-          {gameOver &&
-            guesses.length > 0 &&
-            guesses[guesses.length - 1] !== currentLocation && (
-              <Guess emoji={"🏁"} text={currentLocation} />
-            )}
-        </ul>
-      </div>
+      <Guesses
+        guesses={guesses}
+        currentLocation={currentLocation}
+        gameOver={gameOver}
+        score={score}
+      />
       {!gameOver && (
         <div className="w-full flex flex-col mt-4">
-          <h2 className="text-xl font-bold">Pistas</h2>
+          <Heading
+            title={"Pistas"}
+            extraText={`🎯 ${313 - score} intento${
+              313 - score == 1 ? "" : "s"
+            }`}
+          />
           <div className="flex flex-col items-center mt-4">
             {hints.map((hint, index) => (
               <button
