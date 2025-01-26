@@ -104,7 +104,7 @@ const BestRoute = () => {
   }, []);
 
   return (
-    <div className="flex flex-col gap-2 w-full md:max-w-[45vh] p-1 md:p-2">
+    <div className="flex flex-col gap-2 w-full md:max-w-[45vh] p-2">
       <h3 className="flex flex-wrap text-2xl font-semibold ">
         <span>Como podo ir de </span>
         <span className="ml-2 mr-2 font-bold px-2 py-0.5 rounded-lg bg-teal-500 text-blue-50">
