@@ -6,7 +6,10 @@ function NavBar() {
       <Link to="/" className="text-2xl font-bold">
         🧭 GeoGal
       </Link>
-      <Link to={"/"} className="text-lg block hover:text-blue-950">
+      <Link
+        to="/concellos"
+        className="text-lg block hover:text-blue-950 active:text-blue-950"
+      >
         Concellos
       </Link>
     </nav>
