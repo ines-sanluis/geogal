@@ -18,7 +18,7 @@ const ShareButtons = ({
     const date = new Date().toLocaleDateString("gl");
 
     return `🎯 Xoguei ao GeoGal (${date})
-    ${hasWon ? "🎉 Adiviñei a ruta!" : "😢 Non a adiviñei"}
+    ${hasWon ? "🎉 Adiviñei a ruta!" : "😢 Non adiviñei a ruta."}
     🏆 ${score} puntos.
     ✅ ${correctGuesses} acertos.
     ❌  ${incorrectGuesses} fallos.
@@ -26,7 +26,7 @@ const ShareButtons = ({
 ${
   platform === "Twitter"
     ? "Un xogo de @sanluisdev - https://geogal.vercel.app"
-    : "Xoga en geogal.vercel.app!"
+    : "Xoga en geogal.vercel.app."
 }`;
   };
 
