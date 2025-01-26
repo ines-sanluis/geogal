@@ -10,7 +10,7 @@ function NavBar() {
         to="/concellos"
         className="text-lg block hover:text-blue-950 active:text-blue-950"
       >
-        Concellos
+        Lista de concellos
       </Link>
     </nav>
   );
