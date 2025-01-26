@@ -18,7 +18,7 @@ const ShareButtons = ({
     const date = new Date().toLocaleDateString("gl");
 
     return `🎯 Xoguei ao GeoGal (${date})
-    ${hasWon ? "🎉 Adiviñei o concello!" : "😢 Non o adiviñei"}
+    ${hasWon ? "🎉 Adiviñei a ruta!" : "😢 Non a adiviñei"}
     🏆 ${score} puntos.
     ✅ ${correctGuesses} acertos.
     ❌  ${incorrectGuesses} fallos.
