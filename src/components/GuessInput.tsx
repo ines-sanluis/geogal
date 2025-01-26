@@ -82,7 +82,7 @@ const GuessInput = ({
             handleSubmit();
           }}
           placeholder="Escribe o nome dun concello..."
-          list={currentGuess.length >= 1 ? "suggestions" : undefined}
+          list={"suggestions"}
         />
         <datalist id="suggestions">
           {suggestions.map((name) =>

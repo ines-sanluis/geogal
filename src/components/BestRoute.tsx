@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import confetti from "canvas-confetti";
 import { municipalitiesData as geojsonData } from "../data/municipalities-wgs84";
 import { getSuggestions } from "../utils/findShortestRoute";
@@ -31,7 +31,10 @@ const BestRoute = () => {
   );
   const [hasWon, setHasWon] = React.useState(gameplay.hasWon || false);
   const maxGuesses = solution ? solution.length + 5 : 0;
-  const suggestions = getSuggestions(startPoint, endPoint);
+  const suggestions = React.useMemo(
+    () => getSuggestions(startPoint, endPoint),
+    [startPoint, endPoint]
+  );
 
   if (!solution) {
     return <div>Parece que hoxe hai un problema...</div>;
