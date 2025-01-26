@@ -1,11 +1,10 @@
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useCallback, useEffect } from "react";
 import confetti from "canvas-confetti";
 import { municipalitiesData as geojsonData } from "../data/municipalities-wgs84";
 import { getSuggestions } from "../utils/findShortestRoute";
 import Map from "./Map";
 import Hints from "./Hints";
 import GuessInput from "./GuessInput";
-import Button from "./Button";
 import Heading from "./Heading";
 import Results from "./Results";
 import validatePath from "../utils/validatePath";

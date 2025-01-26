@@ -1,12 +1,13 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import BestRoute from "./components/BestRoute";
+import Learn from "./components/Learn";
 import NavBar from "./components/NavBar";
 import { ToastContainer } from "react-toastify";
 
 function App() {
   return (
     <Router>
-      <main className="flex flex-col items-center justify-center w-screen gap-8">
+      <main className="flex flex-col items-center justify-center w-screen">
         <NavBar />
         <ToastContainer theme="dark" position="bottom-center" hideProgressBar />
 
@@ -17,6 +18,7 @@ function App() {
               <BestRoute startPoint="Santiago de Compostela" endPoint="Touro" />
             }
           />
+          <Route path="/concellos" element={<Learn />} />
         </Routes>
 
         <footer className="mt-8 mb-8 text-center text-sm p-2 mx-auto">
