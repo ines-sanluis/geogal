@@ -1,9 +1,6 @@
+import { compareStrings, isStringInArray } from "../utils/compareString";
 import React from "react";
 import { toast } from "react-toastify";
-
-function cleanString(str: string) {
-  return str.replace(/\s+/g, "").toLowerCase();
-}
 
 const GuessInput = ({
   start,
@@ -16,7 +13,7 @@ const GuessInput = ({
   start: string;
   end: string;
   onGuess: (municipality: string) => void;
-  alreadyGuessed: Guess[];
+  alreadyGuessed: string[];
   isGameOver: boolean;
   suggestions: string[];
 }) => {
@@ -27,24 +24,17 @@ const GuessInput = ({
       return;
     }
     if (currentGuess) {
-      let clearGuess = cleanString(currentGuess);
-      let isAlreadyGuessed = alreadyGuessed.some(
-        (guess) => cleanString(guess.name) === clearGuess
-      );
+      let isAlreadyGuessed = isStringInArray(alreadyGuessed, currentGuess);
       if (isAlreadyGuessed) {
         toast.warning("Xa tes a " + currentGuess + " na túa ruta.");
         return;
       } else if (
-        clearGuess === cleanString(start) ||
-        clearGuess === cleanString(end)
+        compareStrings(currentGuess, start) ||
+        compareStrings(currentGuess, end)
       ) {
         toast.error("Non podes empregar os concellos obxectivo");
         return;
-      } else if (
-        !suggestions.some(
-          (suggestion) => cleanString(suggestion) === clearGuess
-        )
-      ) {
+      } else if (!isStringInArray(suggestions, currentGuess)) {
         toast.error("Non recoñezo ese concello.");
         return;
       } else {

@@ -6,8 +6,9 @@ interface Guess {
 interface GamePlay {
   start: string;
   end: string;
-  solution?: string[];
-  guesses?: Guess[];
+  officialSolution?: string[];
+  userSolution?: string[];
+  guesses?: string[];
   isGameOver: boolean;
   hasWon?: boolean;
   date?: string;

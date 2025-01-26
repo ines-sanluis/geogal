@@ -1,3 +1,4 @@
+import { isStringInArray } from "../utils/compareString";
 import useTimeUntilMidnight from "../hooks/useTimeUntilMidnight";
 import Heading from "./Heading";
 import ShareButtons from "./ShareButtons";
@@ -6,15 +7,21 @@ function Results({
   usedHints,
   hasWon,
   solution,
+  officialSolution,
+  wasOfficialSolution,
   guesses,
 }: {
   usedHints: number;
   hasWon: boolean;
   solution: string[];
-  guesses: Guess[];
+  officialSolution: string[];
+  wasOfficialSolution: boolean;
+  guesses: string[];
 }) {
-  const incorrectGuesses = guesses.filter((guess) => !guess.correct).length;
-  const correctGuesses = guesses.filter((guess) => guess.correct).length;
+  const incorrectGuesses = guesses.filter(
+    (guess) => isStringInArray(solution, guess) === false
+  ).length;
+  const correctGuesses = solution.length - incorrectGuesses;
   const timeLeft = useTimeUntilMidnight();
   const score =
     incorrectGuesses == guesses.length
@@ -35,12 +42,23 @@ function Results({
         <>
           <Heading title={"Parabéns"} extraText={displayedScore} />
           <p>
-            Acertaches a ruta{" "}
+            {wasOfficialSolution
+              ? "Adiviñaches a ruta oficial "
+              : "Atopaches unha ruta alternativa "}
             {incorrectGuesses == 0
-              ? "sen cometer ningún erro "
-              : `con ${incorrectGuesses} erros `}
-            e usaches {usedHints} pistas. Serás quen de repetilo mañá?
+              ? "sen cometer ningún erro"
+              : `con ${incorrectGuesses} erros`}
+            . Usaches {usedHints} pistas. Serás quen de repetilo mañá?
           </p>
+          {!wasOfficialSolution && officialSolution && (
+            <p>
+              A nosa solución era{" "}
+              <span className="font-semibold">
+                {officialSolution.join(" > ")}
+              </span>
+              .
+            </p>
+          )}
         </>
       ) : (
         <>

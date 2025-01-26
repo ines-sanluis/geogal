@@ -4,7 +4,7 @@ import findShortestRoute from "./findShortestRoute";
 
 const KEY = "xeo-gal-last-gameplay";
 
-export function saveGuesses(guesses: Guess[], usedHints?: number) {
+export function saveGuesses(guesses: string[], usedHints?: number) {
   const gameplay = getGameFromStorage();
   if (gameplay) {
     gameplay.guesses = guesses;
@@ -17,10 +17,16 @@ export function saveGame(gameplay: GamePlay) {
   localStorage.setItem(KEY, JSON.stringify(gameplay));
 }
 
-export function saveSolution(start: string, end: string, solution: string[]) {
+export function saveSolution(
+  start: string,
+  end: string,
+  officialSolution: string[],
+  userSolution?: string[]
+) {
   const gameplay = getGameFromStorage();
   if (gameplay) {
-    gameplay.solution = solution;
+    gameplay.officialSolution = officialSolution;
+    gameplay.userSolution = userSolution;
     gameplay.start = start;
     gameplay.end = end;
     gameplay.date = getTodayString();
@@ -29,7 +35,8 @@ export function saveSolution(start: string, end: string, solution: string[]) {
     saveGame({
       start,
       end,
-      solution,
+      officialSolution,
+      userSolution,
       usedHints: 0,
       isGameOver: false,
       date: getTodayString(),
@@ -68,19 +75,19 @@ function getGame(): GamePlay {
   const keys = Object.keys(map);
   let start = keys[Math.abs(dateHash) % keys.length];
   let end = keys[Math.abs(dateHash * 2) % keys.length];
-  let solution = findShortestRoute(start, end);
+  let officialSolution = findShortestRoute(start, end);
 
   // Use default game
-  if (!solution || solution.length == 2) {
+  if (!officialSolution || officialSolution.length == 2) {
     start = "Viveiro";
     end = "Samos";
-    solution = findShortestRoute(start, end);
+    officialSolution = findShortestRoute(start, end);
   }
   return {
     start,
     end,
     usedHints: 0,
-    solution: solution || [],
+    officialSolution: officialSolution || [],
     isGameOver: false,
   };
 }

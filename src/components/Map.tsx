@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
-import { Feature, FeatureCollection } from "geojson";
+import { FeatureCollection } from "geojson";
 
 import {
   FaPlus,
@@ -9,6 +9,7 @@ import {
   FaBorderAll,
 } from "react-icons/fa6";
 import ZoomButton from "./ZoomButton";
+import { compareStrings, isStringInArray } from "../utils/compareString";
 
 function getProjection(data: FeatureCollection, width: number, height: number) {
   const center = d3.geoCentroid(data);
@@ -19,36 +20,26 @@ function getProjection(data: FeatureCollection, width: number, height: number) {
     .translate([width / 2, height / 2]);
 }
 
-function getFeatureByName(
-  data: FeatureCollection,
-  name: string
-): Feature | undefined {
-  return data.features.find((f) => f.properties?.NAMEUNIT === name);
-}
-
 const Map = ({
   data,
   startPoint,
   endPoint,
   alreadyGuessed,
   isGameOver,
-  solutions,
+  solution,
 }: {
   data: FeatureCollection;
   startPoint: string;
   endPoint: string;
-  alreadyGuessed: Guess[];
+  alreadyGuessed: string[];
   isGameOver: boolean;
-  solutions: string[];
+  solution: string[];
 }) => {
   const [showAll, setShowAll] = useState(false);
   const svgRef = useRef<SVGSVGElement>(null);
   const zoomState = useRef();
 
-  const start = getFeatureByName(data, startPoint);
-  const end = getFeatureByName(data, endPoint);
-
-  if (!start || !end) return <div>Error</div>;
+  if (!startPoint || !endPoint) return <div>Error</div>;
 
   useEffect(() => {
     if (!data || !svgRef.current) {
@@ -76,23 +67,21 @@ const Map = ({
       .attr("d", pathGenerator)
       .attr("stroke-width", 0.5)
       .attr("class", (feature: any) => {
+        let hasBeenGuessed = isStringInArray(
+          alreadyGuessed,
+          feature.properties.NAMEUNIT
+        );
+        let isSolution = isStringInArray(solution, feature.properties.NAMEUNIT);
         let classes = "transition-colors duration-200 ";
-        if (startPoint === feature.properties.NAMEUNIT) {
+        if (compareStrings(startPoint, feature.properties.NAMEUNIT)) {
           classes += "fill-teal-500";
-        } else if (endPoint === feature.properties.NAMEUNIT) {
+        } else if (compareStrings(endPoint, feature.properties.NAMEUNIT)) {
           classes += "fill-blue-500";
-        } else if (
-          alreadyGuessed.some((g) => g.name === feature.properties.NAMEUNIT) ||
-          (isGameOver && solutions.includes(feature.properties.NAMEUNIT))
-        ) {
-          if (
-            alreadyGuessed.find((g) => g.name === feature.properties.NAMEUNIT)
-              ?.correct ||
-            (isGameOver && solutions.includes(feature.properties.NAMEUNIT))
-          ) {
+        } else if (hasBeenGuessed || (isGameOver && isSolution)) {
+          if (isSolution) {
             classes += "fill-slate-600 ";
           } else {
-            classes += "fill-slate-300";
+            classes += "fill-slate-300 ";
           }
         } else if (showAll) {
           classes += "stroke-blue-400 fill-blue-100";
@@ -106,7 +95,9 @@ const Map = ({
 
     const newGuess = alreadyGuessed[alreadyGuessed.length - 1];
     paths
-      .filter((feature: any) => feature.properties.NAMEUNIT === newGuess?.name)
+      .filter((feature: any) =>
+        compareStrings(feature.properties.NAMEUNIT, newGuess)
+      )
       .transition()
       .duration(300)
       .attrTween("transform", () => {

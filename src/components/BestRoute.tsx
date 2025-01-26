@@ -15,33 +15,40 @@ import getGame, {
   saveResult,
 } from "../utils/gameplay";
 import getHints from "../utils/hints";
+import { areDifferentSolutions } from "../utils/compareString";
 
 const BestRoute = () => {
   const gameplay = getGame();
   const startPoint = gameplay.start;
   const endPoint = gameplay.end;
-  const solution = gameplay.solution;
+  const officialSolution = gameplay.officialSolution;
+  const [userSolution, setUserSolution] = React.useState<string[] | undefined>(
+    undefined
+  );
   const [usedHints, setUsedHints] = React.useState(gameplay.usedHints || 0);
   const [isGameOver, setIsGameOver] = React.useState(
     gameplay.isGameOver || false
   );
-  const [alreadyGuessed, setAlreadyGuessed] = React.useState<Guess[]>(
+  const [alreadyGuessed, setAlreadyGuessed] = React.useState<string[]>(
     gameplay.guesses || []
   );
   const [hasWon, setHasWon] = React.useState(gameplay.hasWon || false);
-  const maxGuesses = solution ? solution.length + 5 : 0;
+  const maxGuesses =
+    officialSolution && officialSolution[0]
+      ? officialSolution[0].length + 5
+      : 0;
   const suggestions = React.useMemo(
     () => getSuggestions(startPoint, endPoint),
     [startPoint, endPoint]
   );
 
-  if (!solution) {
+  if (!officialSolution) {
     return <div>Parece que hoxe hai un problema...</div>;
   }
 
   useEffect(() => {
-    saveSolution(startPoint, endPoint, solution);
-  }, [solution, startPoint, endPoint]);
+    saveSolution(startPoint, endPoint, officialSolution, userSolution);
+  }, [officialSolution, userSolution, startPoint, endPoint]);
 
   const onHintClick = useCallback(() => {
     setUsedHints((hints) => {
@@ -70,35 +77,29 @@ const BestRoute = () => {
   }
 
   useEffect(() => {
-    const validPath = validatePath(startPoint, endPoint, [
+    const result = validatePath(startPoint, endPoint, [
       startPoint,
-      ...alreadyGuessed.map((g) => g.name),
+      ...alreadyGuessed,
       endPoint,
     ]);
-    if (validPath) {
+    if (result.valid && result.path) {
+      if (areDifferentSolutions(result.path, officialSolution)) {
+        setUserSolution(result.path);
+      }
       launchConfetti();
       setHasWon(true);
     }
-    if (alreadyGuessed.length >= maxGuesses || validPath) {
+    if (alreadyGuessed.length >= maxGuesses || result.valid) {
       setIsGameOver(true);
-      saveResult(validPath);
+      saveResult(result.valid);
     }
   }, [alreadyGuessed, maxGuesses]);
 
   const onGuess = useCallback((municipality: string) => {
     const s = suggestions.map((s) => s.toLowerCase());
     if (s.includes(municipality.toLowerCase())) {
-      setAlreadyGuessed((guessed: Guess[]) => {
-        const correct = solution
-          .map((s) => s.replace(/\s+/g, "").toLowerCase())
-          .includes(municipality.replace(/\s+/g, "").toLowerCase());
-        const newGuesses = [
-          ...guessed,
-          {
-            name: municipality,
-            correct,
-          },
-        ];
+      setAlreadyGuessed((guessed: string[]) => {
+        const newGuesses = [...guessed, municipality];
         saveGuesses(newGuesses);
         return newGuesses;
       });
@@ -118,14 +119,14 @@ const BestRoute = () => {
         </span>
         <span>?</span>
       </h3>
-      {solution && (
+      {officialSolution && (
         <Map
           data={geojsonData}
           startPoint={startPoint}
           endPoint={endPoint}
           alreadyGuessed={alreadyGuessed}
           isGameOver={isGameOver}
-          solutions={solution}
+          solution={userSolution || officialSolution}
         />
       )}
       <Heading
@@ -141,21 +142,30 @@ const BestRoute = () => {
         isGameOver={isGameOver}
         suggestions={suggestions}
       />
-      <Guesses alreadyGuessed={alreadyGuessed} />
+      <Guesses
+        alreadyGuessed={alreadyGuessed}
+        solution={userSolution || officialSolution}
+      />
       {isGameOver ? (
         <Results
           usedHints={usedHints}
           hasWon={hasWon}
-          solution={solution}
+          solution={userSolution || officialSolution}
+          officialSolution={officialSolution}
+          wasOfficialSolution={
+            !areDifferentSolutions(userSolution, officialSolution)
+          }
           guesses={alreadyGuessed}
         />
       ) : (
         <Hints
-          hints={getHints(startPoint, endPoint, solution)}
+          hints={getHints(startPoint, endPoint, officialSolution)}
           shownHints={usedHints}
           onHintClick={onHintClick}
         />
       )}
+      <p>{officialSolution}</p>
+      <p>user {userSolution}</p>
     </div>
   );
 };
