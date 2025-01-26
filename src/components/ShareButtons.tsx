@@ -1,58 +1,62 @@
+import Button from "./Button";
 import WhatsAppIcon from "./Icons/WhatsappIcon";
 import XIcon from "./Icons/XIcon";
 
 const ShareButtons = ({
   score,
-  guesses,
+  correctGuesses,
+  incorrectGuesses,
+  usedHints,
   hasWon,
 }: {
   score: number;
-  guesses: string[];
+  correctGuesses: number;
+  incorrectGuesses: number;
+  usedHints: number;
   hasWon: boolean;
 }) => {
-  const generateShareText = () => {
+  const generateShareText = (platform: string) => {
     const date = new Date().toLocaleDateString("gl");
-    const guessCount = guesses.length;
 
     return `🎯 Xoguei ao GeoGal (${date})
     ${hasWon ? "🎉 Adiviñei o concello!" : "😢 Non o adiviñei"}
-    🎲 Ao ${guessCount} intento${guessCount > 1 ? "s" : ""}!
-    🏆 ${score} puntos
-Xoga en geogal.vercel.app!`;
+    🏆 ${score} puntos.
+    ✅ ${correctGuesses} acertos.
+    ❌  ${incorrectGuesses} fallos.
+    🧠 ${usedHints} pistas.
+${
+  platform === "Twitter"
+    ? "Un xogo de @sanluisdev - https://geogal.vercel.app"
+    : "Xoga en geogal.vercel.app!"
+}`;
   };
 
   const handleWhatsAppShare = () => {
-    const text = encodeURIComponent(generateShareText());
+    const text = encodeURIComponent(generateShareText("WhatsApp"));
     window.open(`https://wa.me/?text=${text}`, "_blank");
   };
 
   const handleTwitterShare = () => {
-    const text = encodeURIComponent(generateShareText());
+    const text = encodeURIComponent(generateShareText("Twitter"));
     window.open(`https://twitter.com/intent/tweet?text=${text}`, "_blank");
   };
 
   return (
     <div className="flex flex-col sm:flex-row gap-3 mt-4 w-full">
-      <button
+      <Button
         onClick={handleWhatsAppShare}
-        className="flex-1 flex items-center justify-center gap-2 px-6 py-3 
-                text-white font-medium rounded-xl
-                 shadow-lg hover:shadow-xl transition-all duration-200
-                 active:scale-95"
-      >
-        <WhatsAppIcon size={20} />
-        <span>WhatsApp</span>
-      </button>
-      <button
+        text="WhatsApp"
+        icon={<WhatsAppIcon size={20} />}
+        disabled={false}
+        hideText
+      />
+      <Button
         onClick={handleTwitterShare}
-        className="flex-1 flex items-center justify-center gap-2 px-6 py-3 
-                text-white font-medium rounded-xl
-                 shadow-lg hover:shadow-xl transition-all duration-200
-                 active:scale-95"
-      >
-        <XIcon size={20} />
-        <span>Twitter</span>
-      </button>
+        text="X"
+        icon={<XIcon size={20} />}
+        disabled={false}
+        hideText
+      />
     </div>
   );
 };

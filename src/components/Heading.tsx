@@ -1,9 +1,9 @@
-function Heading({ title, extraText }: { title: string; extraText: string }) {
+function Heading({ title, extraText }: { title: string; extraText?: string }) {
   return (
-    <div className="flex justify-between">
-      <h2 className="text-xl font-bold">{title}</h2>
-      <p className="text-lg font-bold">{extraText}</p>
-    </div>
+    <h3 className="mt-2 flex text-center justify-between">
+      <span className="text-lg font-bold">{title}</span>
+      <span className="text-lg font-semibold">{extraText}</span>
+    </h3>
   );
 }
 

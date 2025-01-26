@@ -19,6 +19,12 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["**/*.ts", "**/*.tsx", "src/components/GaliciaMap.tsx"],
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "src/components/GaliciaMap.tsx",
+    "src/data/scripts/transform.js",
+    "src/data/scripts/data.js"
+  ],
   "exclude": ["node_modules"]
 }
