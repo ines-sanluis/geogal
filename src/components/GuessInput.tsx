@@ -1,6 +1,5 @@
 import React from "react";
 import { toast } from "react-toastify";
-import debounce from "lodash/debounce";
 
 function cleanString(str: string) {
   return str.replace(/\s+/g, "").toLowerCase();
@@ -22,7 +21,6 @@ const GuessInput = ({
   suggestions: string[];
 }) => {
   const [currentGuess, setCurrentGuess] = React.useState("");
-  const debouncedSetCurrentGuess = debounce(setCurrentGuess, 300);
 
   const handleSubmit = () => {
     if (isGameOver) {
@@ -72,7 +70,7 @@ const GuessInput = ({
           type="text"
           disabled={isGameOver}
           value={currentGuess}
-          onChange={(e) => debouncedSetCurrentGuess(e.target.value)}
+          onChange={(e) => setCurrentGuess(e.target.value)}
           // onClick or onEnter call handleSubmit
           onKeyDown={(e) => {
             if (e.key === "Enter" || e.key === "OK") {
@@ -87,13 +85,11 @@ const GuessInput = ({
           list={"suggestions"}
         />
         <datalist id="suggestions">
-          {suggestions.map((name) =>
-            name.toLowerCase().startsWith(currentGuess.toLowerCase()) ? (
-              <option key={name} value={name}>
-                {name}
-              </option>
-            ) : null
-          )}
+          {suggestions.map((name) => (
+            <option key={name} value={name}>
+              {name}
+            </option>
+          ))}
         </datalist>
       </div>
     </div>
