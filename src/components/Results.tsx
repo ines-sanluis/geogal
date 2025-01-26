@@ -68,7 +68,7 @@ function Results({
         </>
       ) : (
         <>
-          <Heading title={"Perdeches"} extraText={displayedScore} />
+          <Heading title={"Perdiches"} extraText={displayedScore} />
           {correctGuesses === 0 ? (
             <p>
               Non acertaches ningún concello. A solución era{" "}
