@@ -3,7 +3,6 @@ function getHints(start: string, end: string, solutions: string[]) {
   const restOfSolutions = solutions.filter((s) => s !== start && s !== end);
   const pathLength = restOfSolutions.length;
   const isPlural = pathLength > 1;
-  const firstLetter = restOfSolutions[0].charAt(0);
 
   return [
     {

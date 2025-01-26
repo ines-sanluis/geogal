@@ -1,6 +1,5 @@
 import Button from "./Button";
-import WhatsAppIcon from "./Icons/WhatsappIcon";
-import XIcon from "./Icons/XIcon";
+import { FaWhatsapp, FaXTwitter } from "react-icons/fa6";
 
 const ShareButtons = ({
   score,
@@ -46,14 +45,14 @@ ${
       <Button
         onClick={handleWhatsAppShare}
         text="WhatsApp"
-        icon={<WhatsAppIcon size={20} />}
+        icon={<FaWhatsapp size={20} />}
         disabled={false}
         hideText
       />
       <Button
         onClick={handleTwitterShare}
         text="X"
-        icon={<XIcon size={20} />}
+        icon={<FaXTwitter size={20} />}
         disabled={false}
         hideText
       />
