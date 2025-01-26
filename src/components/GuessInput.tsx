@@ -46,6 +46,7 @@ const GuessInput = ({
         )
       ) {
         toast.error("Non recoñezo ese concello.");
+        return;
       } else {
         onGuess(currentGuess);
         setCurrentGuess("");

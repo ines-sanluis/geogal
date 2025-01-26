@@ -89,7 +89,9 @@ const BestRoute = () => {
     const s = suggestions.map((s) => s.toLowerCase());
     if (s.includes(municipality.toLowerCase())) {
       setAlreadyGuessed((guessed: Guess[]) => {
-        const correct = solution.includes(municipality);
+        const correct = solution
+          .map((s) => s.replace(/\s+/g, "").toLowerCase())
+          .includes(municipality.replace(/\s+/g, "").toLowerCase());
         const newGuesses = [
           ...guessed,
           {
