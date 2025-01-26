@@ -22,7 +22,7 @@ function Button({
     flex items-center gap-2
     ${
       disabled
-        ? "cursor-not-allowed border-primary "
+        ? "cursor-not-allowed "
         : "cursor-pointer rounded-lg text-blue-500 bg-blue-100 hover:bg-blue-500 hover:text-white "
     } ${className}`}
       onClick={onClick}
