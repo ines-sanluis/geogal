@@ -69,7 +69,7 @@ function Results({
         usedHints={usedHints}
         hasWon={hasWon}
       />
-      <p className="text-center">Próximo concello en {timeLeft}.</p>
+      <p className="text-center">Próxima ruta en {timeLeft}.</p>
     </>
   );
 }
