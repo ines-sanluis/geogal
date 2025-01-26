@@ -3,11 +3,13 @@ import BestRoute from "./components/BestRoute";
 import Learn from "./components/Learn";
 import NavBar from "./components/NavBar";
 import { ToastContainer } from "react-toastify";
+import { Analytics } from "@vercel/analytics";
 
 function App() {
   return (
     <Router>
       <main className="flex flex-col items-center justify-center w-screen">
+        <Analytics />
         <NavBar />
         <ToastContainer theme="dark" position="bottom-center" hideProgressBar />
 
