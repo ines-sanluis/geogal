@@ -25,9 +25,9 @@ function Results({
         guess
       ) === false
   ).length;
-  const correctGuesses =
-    (wasOfficialSolution ? officialSolution.length : solution.length) -
-    incorrectGuesses;
+  const correctGuesses = guesses.filter((guess) =>
+    isStringInArray(wasOfficialSolution ? officialSolution : solution, guess)
+  ).length;
   const timeLeft = useTimeUntilMidnight();
   const score =
     incorrectGuesses == guesses.length
