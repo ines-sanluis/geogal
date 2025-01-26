@@ -164,8 +164,6 @@ const BestRoute = () => {
           onHintClick={onHintClick}
         />
       )}
-      <p>{officialSolution}</p>
-      <p>user {userSolution}</p>
     </div>
   );
 };

@@ -36,7 +36,6 @@ function validatePath(
     valid: boolean;
     path: string[] | undefined;
   } {
-    console.log("Start", visited, current, target);
     visited.add(current);
     path.push(current);
 
