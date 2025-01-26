@@ -6,7 +6,7 @@ function Learn({}: {}) {
   return (
     <section className="flex flex-col gap-2 max-w-[65vh] p-2">
       <Heading title="Lista dos concellos de Galicia" />
-      <div className="flex flex-col flex-wrap gap-2">
+      <div className="flex flex-col flex-wrap gap-4">
         <h2 className="text-md font-semibold">A Coruña</h2>
         <ul className="flex flex-wrap gap-2">
           {geojsonData.features
